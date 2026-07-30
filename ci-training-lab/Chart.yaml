@@ -1,0 +1,12 @@
+apiVersion: v2
+name: ci-training-lab
+description: Helm chart for ci-training-lab Node.js REST API
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - nodejs
+  - express
+  - rest-api
+maintainers:
+  - name: VietDevOps

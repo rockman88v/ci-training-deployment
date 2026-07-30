@@ -1,0 +1,94 @@
+replicaCount: 2
+
+image:
+  repository: ghcr.io/vietdevops/ci-training-lab-vietdevops
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 3000
+
+ingress:
+  enabled: false
+  className: "nginx"
+  annotations: {}
+    # nginx.ingress.kubernetes.io/rewrite-target: /
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  host: ci-training-lab.vietdevops.com
+  path: /
+  pathType: Prefix
+  tls: []
+  # Ví dụ TLS với cert-manager:
+  # - secretName: ci-training-lab-tls
+  #   hosts:
+  #     - ci-training-lab.example.com
+
+env:
+  NODE_ENV: production
+  PORT: "3000"
+
+# API_KEY được quản lý qua Kubernetes Secret.
+# KHÔNG đặt giá trị thật tại đây.
+# Cách set khi deploy:
+#   helm install ... --set secret.apiKey=<your-key>
+#   Hoặc dùng External Secrets Operator / Sealed Secrets
+secret:
+  apiKey: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 15
+  periodSeconds: 20
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 3000
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Pod chạy non-root — khớp với Dockerfile (appuser uid=1000)
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+
+securityContext:
+  allowPrivilegeEscalation: false
+  capabilities:
+    drop:
+      - ALL
+
+# imagePullSecrets: tên của Secret loại kubernetes.io/dockerconfigjson
+# Secret phải được tạo trước bởi người dùng, ví dụ:
+#   kubectl create secret docker-registry my-registry-secret \
+#     --docker-server=ghcr.io \
+#     --docker-username=<user> \
+#     --docker-password=<token>
+#imagePullSecrets: []
+imagePullSecrets:
+  - name: ghcr-secret
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
