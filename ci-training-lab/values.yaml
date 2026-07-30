@@ -1,24 +1,20 @@
 replicaCount: 2
-
 image:
   repository: ghcr.io/vietdevops/ci-training-lab-vietdevops
-  tag: "latest"
+  tag: "5e94fc6b0c8c788fe3f2427f46cf1e656db1d9ef"
   pullPolicy: IfNotPresent
-
 nameOverride: ""
 fullnameOverride: ""
-
 service:
   type: ClusterIP
   port: 80
   targetPort: 3000
-
 ingress:
   enabled: false
   className: "nginx"
   annotations: {}
-    # nginx.ingress.kubernetes.io/rewrite-target: /
-    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  # nginx.ingress.kubernetes.io/rewrite-target: /
+  # cert-manager.io/cluster-issuer: letsencrypt-prod
   host: ci-training-lab.vietdevops.com
   path: /
   pathType: Prefix
@@ -27,11 +23,9 @@ ingress:
   # - secretName: ci-training-lab-tls
   #   hosts:
   #     - ci-training-lab.example.com
-
 env:
   NODE_ENV: production
   PORT: "3000"
-
 # API_KEY được quản lý qua Kubernetes Secret.
 # KHÔNG đặt giá trị thật tại đây.
 # Cách set khi deploy:
@@ -39,7 +33,6 @@ env:
 #   Hoặc dùng External Secrets Operator / Sealed Secrets
 secret:
   apiKey: ""
-
 resources:
   requests:
     cpu: 100m
@@ -47,7 +40,6 @@ resources:
   limits:
     cpu: 500m
     memory: 256Mi
-
 livenessProbe:
   httpGet:
     path: /health
@@ -56,7 +48,6 @@ livenessProbe:
   periodSeconds: 20
   timeoutSeconds: 5
   failureThreshold: 3
-
 readinessProbe:
   httpGet:
     path: /health
@@ -65,20 +56,17 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 3
   failureThreshold: 3
-
 # Pod chạy non-root — khớp với Dockerfile (appuser uid=1000)
 podSecurityContext:
   runAsNonRoot: true
   runAsUser: 1000
   runAsGroup: 1000
   fsGroup: 1000
-
 securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
       - ALL
-
 # imagePullSecrets: tên của Secret loại kubernetes.io/dockerconfigjson
 # Secret phải được tạo trước bởi người dùng, ví dụ:
 #   kubectl create secret docker-registry my-registry-secret \
@@ -88,7 +76,6 @@ securityContext:
 #imagePullSecrets: []
 imagePullSecrets:
   - name: ghcr-secret
-
 nodeSelector: {}
 tolerations: []
 affinity: {}
