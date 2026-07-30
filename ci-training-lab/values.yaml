@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
-  repository: ghcr.io/vietdevops/ci-training-lab-vietdevops
-  tag: "5e94fc6b0c8c788fe3f2427f46cf1e656db1d9ef"
+  repository: ghcr.io/vietchita/ci-training-lab-demo
+  tag: "latest"
   pullPolicy: IfNotPresent
 nameOverride: ""
 fullnameOverride: ""
