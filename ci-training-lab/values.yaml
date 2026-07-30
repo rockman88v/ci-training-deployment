@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: ghcr.io/vietchita/ci-training-lab-demo
-  tag: "latest"
+  tag: "9ccc592cd9e9dbfdf9c27486ad84df906b2962fc"
   pullPolicy: IfNotPresent
 nameOverride: ""
 fullnameOverride: ""
